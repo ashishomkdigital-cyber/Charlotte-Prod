@@ -451,6 +451,9 @@
     },
     "jumbo_scroll_hero_jB4epg": {
       "type": "jumbo-scroll-hero",
+      "custom_css": [
+        ".jumbo-hero-details-template--22757934530796__jumbo_scroll_hero_jB4epg{margin-top: 230px;}"
+      ],
       "name": "Jumbo Scroll Hero",
       "settings": {
         "background_image": "shopify://shop_images/74633ecc50446ecafa40f2ca8e84518ffaa50671.jpg",
