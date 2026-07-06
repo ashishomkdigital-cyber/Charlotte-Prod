@@ -1,0 +1,314 @@
+{% comment %}
+  Feature Bar Section
+  Displays up to 4 icon + text feature highlights (e.g. delivery, materials, checkout, packaging)
+{% endcomment %}
+
+<div class="feature-bar">
+  <div class="feature-bar__inner">
+    {% for i in (1..4) %}
+      {% assign icon_key = 'icon_' | append: i %}
+      {% assign text_key = 'text_' | append: i %}
+      {% assign icon = section.settings[icon_key] %}
+      {% assign text = section.settings[text_key] %}
+
+      {% if text != blank %}
+        <div class="feature-bar__item">
+          {% if icon != blank %}
+            <div class="feature-bar__icon">
+              {{ icon | image_url: width: 48 | image_tag: loading: 'lazy', alt: text }}
+            </div>
+          {% endif %}
+          <p class="feature-bar__text">{{ text }}</p>
+        </div>
+        
+      {% endif %}
+    {% endfor %}
+  </div>
+  <div class="feature-bar__dots">
+  {% for i in (1..4) %}
+    {% assign text_key = 'text_' | append: i %}
+    {% if section.settings[text_key] != blank %}
+      <span class="feature-bar__dot {% if forloop.first %}active{% endif %}"></span>
+    {% endif %}
+  {% endfor %}
+</div>
+</div>
+
+<style>
+  .feature-bar__dots {
+  display: none;
+}
+
+  .feature-bar {
+    background-color: {{ section.settings.background_color }};
+    padding: {{ section.settings.padding_vertical }}px 20px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .feature-bar__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 80px;
+    flex-wrap: wrap;
+  }
+
+  .feature-bar__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+    flex: 1 1 160px;
+    max-width: 200px;
+  }
+
+  .feature-bar__icon img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    filter: brightness(0) saturate(100%) invert(20%) sepia(10%) saturate(500%) hue-rotate(340deg);
+  }
+
+  .feature-bar__text {
+    font-family: {{ section.settings.font_family }}, sans-serif;
+    font-size: {{ section.settings.font_size }}px;
+    color: {{ section.settings.text_color }};
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+ @media (max-width: 600px) {
+  .feature-bar {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .feature-bar__inner {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 0;
+    justify-content: flex-start;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .feature-bar__inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .feature-bar__item {
+    flex: 0 0 100%;
+    max-width: 100%;
+    scroll-snap-align: center;
+    padding: 0 20px;
+  }
+
+  .feature-bar__text {
+    font-size: {{ section.settings.font_size | minus: 1 }}px;
+  }
+  .feature-bar__dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .feature-bar__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.25);
+    transition: all 0.3s ease;
+  }
+
+  .feature-bar__dot.active {
+    background: {{ section.settings.text_color }};
+    transform: scale(1.2);
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  if (window.innerWidth > 600) return;
+
+  const slider = document.querySelector('.feature-bar__inner');
+  if (!slider) return;
+
+  let index = 0;
+  const items = slider.querySelectorAll('.feature-bar__item');
+
+  setInterval(() => {
+    index = (index + 1) % items.length;
+
+    slider.scrollTo({
+      left: items[index].offsetLeft,
+      behavior: 'smooth'
+    });
+  }, 3000);
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  if (window.innerWidth > 600) return;
+
+  const slider = document.querySelector('.feature-bar__inner');
+  if (!slider) return;
+
+  const items = slider.querySelectorAll('.feature-bar__item');
+  const dots = document.querySelectorAll('.feature-bar__dot');
+
+  let index = 0;
+
+  function updateDots() {
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === index);
+    });
+  }
+
+  setInterval(() => {
+    index = (index + 1) % items.length;
+
+    slider.scrollTo({
+      left: items[index].offsetLeft,
+      behavior: 'smooth'
+    });
+
+    updateDots();
+  }, 3000);
+
+  slider.addEventListener('scroll', () => {
+    const slideWidth = items[0].offsetWidth;
+    index = Math.round(slider.scrollLeft / slideWidth);
+    updateDots();
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "Feature Bar",
+  "tag": "section",
+  "class": "section-feature-bar",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#e8d9c5"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#3b2f2f"
+    },
+    {
+      "type": "select",
+      "id": "font_family",
+      "label": "Font Family",
+      "options": [
+        { "value": "Georgia", "label": "Georgia (Serif)" },
+        { "value": "'Gill Sans'", "label": "Gill Sans" },
+        { "value": "Futura", "label": "Futura" },
+        { "value": "'Helvetica Neue'", "label": "Helvetica Neue" },
+        { "value": "Garamond", "label": "Garamond" }
+      ],
+      "default": "Georgia"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "min": 9,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Font Size",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 10,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Top & Bottom Padding",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Feature 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_1",
+      "label": "Icon 1"
+    },
+    {
+      "type": "text",
+      "id": "text_1",
+      "label": "Label 1",
+      "default": "Pan-India Delivery"
+    },
+    {
+      "type": "header",
+      "content": "Feature 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_2",
+      "label": "Icon 2"
+    },
+    {
+      "type": "text",
+      "id": "text_2",
+      "label": "Label 2",
+      "default": "Premium, Hand-Crafted Materials"
+    },
+    {
+      "type": "header",
+      "content": "Feature 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_3",
+      "label": "Icon 3"
+    },
+    {
+      "type": "text",
+      "id": "text_3",
+      "label": "Label 3",
+      "default": "Secure Checkout"
+    },
+    {
+      "type": "header",
+      "content": "Feature 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_4",
+      "label": "Icon 4"
+    },
+    {
+      "type": "text",
+      "id": "text_4",
+      "label": "Label 4",
+      "default": "Elegant, Protective Packaging"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Feature Bar"
+    }
+  ]
+}
+{% endschema %}

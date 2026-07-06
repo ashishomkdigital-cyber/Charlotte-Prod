@@ -1,0 +1,264 @@
+{% comment %}
+  Section: Crafted for Every Moment
+  A split-layout brand story section with text on the left and image on the right.
+{% endcomment %}
+
+<section class="brand-story" id="section-{{ section.id }}">
+  <div class="brand-story__inner">
+
+    <div class="brand-story__content">
+      {% if section.settings.heading != blank %}
+        <h2 class="brand-story__heading">{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% if section.settings.description != blank %}
+        <div class="brand-story__description">
+          {{ section.settings.description }}
+        </div>
+      {% endif %}
+
+      {% if section.settings.cta_text != blank and section.settings.cta_url != blank %}
+        <a class="brand-story__cta" href="{{ section.settings.cta_url }}">
+          {{ section.settings.cta_text }}
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="brand-story__media">
+      {% if section.settings.image != blank %}
+        <div class="brand-story__image-wrap">
+          {{
+            section.settings.image
+            | image_url: width: 550
+            | image_tag:
+              loading: 'lazy',
+              class: 'brand-story__image',
+              alt: section.settings.image.alt | default: section.settings.heading
+          }}
+        </div>
+      {% else %}
+        <div class="brand-story__image-wrap brand-story__image-wrap--placeholder">
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'brand-story__image brand-story__image--placeholder' }}
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</section>
+
+<style>
+  #section-{{ section.id }} {
+    --bg-color: {{ section.settings.background_color }};
+    --text-color: {{ section.settings.text_color }};
+    --cta-color: {{ section.settings.cta_color }};
+    --heading-font-size: {{ section.settings.heading_size }}px;
+    --section-padding: {{ section.settings.section_padding }}px;
+  }
+</style>
+
+{% stylesheet %}
+  .brand-story {
+    /* background-color: var(--bg-color, #f0e8dc); */
+    background-color:#E8D5B7;
+    padding: var(--section-padding, 60px) 0;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+
+  .brand-story__inner {
+    display: flex;
+    align-items: center;
+    gap: 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ── Left: text ── */
+  .brand-story__content {
+    flex: 1 1 45%;
+    min-width: 0;
+  }
+
+  .brand-story__heading {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: var(--heading-font-size, 32px);
+    font-weight: 400;
+    color: var(--text-color, #2c1f14);
+    line-height: 1.2;
+    margin: 0 0 20px;
+    letter-spacing: -0.01em;
+  }
+
+  .brand-story__description {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text-color, #2c1f14);
+    opacity: 0.8;
+    margin: 0 0 28px;
+    max-width: 420px;
+  }
+
+  .brand-story__description p {
+    margin: 0;
+  }
+
+  .brand-story__cta {
+    display: inline-block;
+    font-size: 11px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cta-color, #b87c4a);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    transition: border-color 0.2s ease, opacity 0.2s ease;
+  }
+
+  .brand-story__cta:hover {
+    border-color: var(--cta-color, #b87c4a);
+    opacity: 0.8;
+  }
+
+  /* ── Right: image ── */
+  .brand-story__media {
+    flex: 1 1 50%;
+    min-width: 0;
+    border: 20px solid #F1DFCA;
+  }
+
+  .brand-story__image-wrap {
+    border-radius: 4px;
+    overflow: hidden;
+    line-height: 0;
+  }
+
+  .brand-story__image {
+    width:572px;
+    height:328px;
+    object-fit:fill;
+    /* object-fit: cover; */
+    display: block;
+    aspect-ratio: 4 / 3;
+  }
+
+  .brand-story__image--placeholder {
+    background-color: #d9cdc2;
+    aspect-ratio: 4 / 3;
+  }
+
+  /* ── Responsive ── */
+  @media screen and (max-width: 768px) {
+    .brand-story__inner {
+      flex-direction: column;
+      padding: 0 24px;
+      gap: 32px;
+    }
+
+    .brand-story__content {
+      flex: unset;
+      width: 100%;
+    }
+
+    .brand-story__media {
+      flex: unset;
+      width: 100%;
+    }
+
+    .brand-story__heading {
+      font-size: calc(var(--heading-font-size, 32px) * 0.8);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Brand Story",
+  "tag": "section",
+  "class": "section-brand-story",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Crafted for Every Moment"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Our philosophy is simple: true luxury should live with you. Every bag is thoughtfully designed, each stitch a quiet expression of elegance. We create pieces not just for occasions, but for the feeling they evoke — confidence, comfort, and the effortless grace of being authentically yourself.</p>"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button label",
+      "default": "Discover our story"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#f0e8dc"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#2c1f14"
+    },
+    {
+      "type": "color",
+      "id": "cta_color",
+      "label": "CTA link color",
+      "default": "#b87c4a"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size (px)",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Section padding (px)",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand Story"
+    }
+  ]
+}
+{% endschema %}

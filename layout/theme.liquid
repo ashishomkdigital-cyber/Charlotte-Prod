@@ -1,0 +1,445 @@
+<!doctype html>
+<html class="no-js{% if request.design_mode %} shopify-design-mode{% endif %}" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="">
+    <link
+      rel="canonical"
+      href="{{ canonical_url }}"
+      canonical-url="{{ shop.url }}/"
+    >
+
+    {%- if settings.favicon != blank -%}
+      <link
+        rel="icon"
+        type="image/png"
+        href="{{ settings.favicon | image_url: width: 32, height: 32 }}"
+      >
+    {%- endif -%}
+
+    {%- unless settings.type_header_font.system?
+      and settings.type_body_font.system?
+      and settings.type_subheading_font.system?
+    -%}
+      <link
+        rel="preconnect"
+        href="https://fonts.shopifycdn.com"
+        crossorigin
+      >
+    {%- endunless -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %}
+        &ndash; tagged "{{ current_tags | join: ', ' }}"
+      {%- endif -%}
+      {%- if current_page != 1 %}
+        &ndash; Page {{ current_page -}}
+      {%- endif -%}
+      {%- unless page_title contains shop.name %}
+        &ndash; {{ shop.name -}}
+      {%- endunless -%}
+    </title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    {% render 'meta-tags' %}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
+    {% render 'global-style' %}
+
+    {% render 'global-css' %}
+
+    {%- render 'global-script' -%}
+
+    {{ content_for_header }}
+  </head>
+
+ <style>
+
+ @font-face {
+  font-family: 'Season Regular';
+  {% comment %} font-style: normal; {% endcomment %}
+  font-weight: 400;
+  src: url('{{ "Season-BF651e732546f7d.woff" | asset_url }}') format('woff');
+}
+
+h1,
+h2,
+h3,
+h4,
+.heading {
+    font-family: 'Season Regular'!important;
+    font-weight:600!important;
+}
+    .header-multi-site{
+      background: transparent;
+    }
+
+    body.template-collection {
+      background: url({{ 'bg.png' | asset_url }}) center top / cover no-repeat fixed;
+      background-color: #390517;
+    }
+
+    body.template-collection #MainContent,
+    body.template-collection #MainContent .shopify-section,
+    body.template-collection #MainContent .section,
+    body.template-collection #MainContent .collection,
+    body.template-collection #MainContent .collection-hero,
+    body.template-collection #MainContent .facets-container,
+    body.template-collection #MainContent .product-grid-container,
+    body.template-collection #MainContent .page-width,
+    body.template-index #MainContent,
+    body.template-index #MainContent .shopify-section,
+    body.template-index #MainContent .section,
+    body.template-index #MainContent .page-width {
+      background: transparent !important;
+    }
+
+    body.template-collection #header-group,
+    body.template-collection #header-component,
+    body.template-collection #header-component .row-group,
+    body.template-collection #header-component .header__row,
+    body.template-collection #header-component .header__columns,
+    body.template-collection #header-component .header,
+    body.template-collection #header-component .header-block,
+    body.template-collection #header-component .header__icon.button,
+    body.template-collection #header-component .button,
+    body.template-collection #header-component .list-menu,
+    body.template-collection #header-component .mega-menu__content,
+    body.template-index #header-group,
+    body.template-index #header-component,
+    body.template-index #header-component .row-group,
+    body.template-index #header-component .header__row,
+    body.template-index #header-component .header__columns,
+    body.template-index #header-component .header,
+    body.template-index #header-component .header-block,
+    body.template-index #header-component .header__icon.button,
+    body.template-index #header-component .button,
+    body.template-index #header-component .list-menu,
+    body.template-index #header-component .mega-menu__content {
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    body.template-collection #header-component,
+    body.template-index #header-component {
+      border-bottom-color: transparent !important;
+    }
+
+    body.template-collection .product-card-wrapper .card {
+      --frame-top: 2.4rem;
+      --frame-side: 2.8rem;
+      --frame-bottom: 2.4rem;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding: var(--frame-top) var(--frame-side) var(--frame-bottom);
+      background:
+        url({{ 'border.png' | asset_url }}) center / 100% 100% no-repeat;
+      overflow: visible;
+      box-shadow: none !important;
+    }
+
+    body.template-collection .product-card-wrapper .card__inner,
+    body.template-collection .product-card-wrapper .card > .card__content {
+      width: 100%;
+      background: #E0E0E0 !important;
+    }
+
+    body.template-collection .product-card-wrapper .card__inner {
+      flex: 0 0 auto;
+      overflow: hidden;
+    }
+
+    body.template-collection .product-card-wrapper .card__inner.ratio::before {
+      padding-bottom: 118%;
+    }
+
+    body.template-collection .product-card-wrapper .card__media {
+      margin: 0;
+      width: 100%;
+      inset: 0;
+    }
+
+    body.template-collection .product-card-wrapper .card > .card__content {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.8rem 2.6rem;
+      text-align: center;
+    }
+
+    body.template-collection .product-card-wrapper .card > .card__content .card__information {
+      width: 100%;
+      padding: 0;
+    }
+
+    body.template-collection .product-card-wrapper .card > .card__content .card__heading,
+    body.template-collection .product-card-wrapper .card > .card__content .price {
+      justify-content: center;
+      text-align: center;
+    }
+
+    body.template-collection .product-card-wrapper .card > .card__content .card__heading a,
+    body.template-collection .product-card-wrapper .card > .card__content .price {
+      color: #390517;
+    }
+
+    body.template-collection .product-card-wrapper .card-product__group-wrapper,
+    body.template-collection .product-card-wrapper .quick-add,
+    body.template-collection .product-card-wrapper .card__badge {
+      z-index: 2;
+    }
+
+    body.template-collection .card-product-information{
+      position: absolute;
+      bottom:5rem;
+    }
+
+    @media(max-width:768px){
+     body.template-collection .card-product-information{
+      position: absolute;
+      bottom:3rem;
+      gap:0;
+    } 
+    }
+
+    body.template-collection .card-product-information .text span{color:#fff!important;font-size:10px!important;}
+    body.template-collection .card-product-information span.price-item.price-item--regular{color:#fff!important;}
+
+    #title-place .title{
+      margin: 0;
+    }
+  </style>
+
+
+  <body
+    class="
+      template-{{ request.page_type | replace: 'customers/', '' }}
+      {% if settings.animations_hover_elements != 'none' %} card-hover--{{ settings.animations_hover_elements }}{% endif %}
+      {% if settings.animation_hover_buttons != 'none' %} button-hover--effect{% endif %}
+      {% if settings.enable_preloading_screen %} has--preload-screen{% endif %}
+    "
+  >
+    {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
+
+    {%- if settings.enable_preloading_screen -%}
+      {% render 'preload-screen' %}
+    {%- endif -%}
+
+    <script src="{{ 'details-disclosure.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'details-modal.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'search-form.js' | asset_url }}" defer="defer"></script>
+
+      <div id="header-group">
+        {% sections 'header-group' %}
+      </div>
+
+    {%- liquid
+      sections 'popup-group'
+      sections 'general-group'
+      sections 'toolbar-mobile'
+    -%}
+
+    <main
+      id="MainContent"
+      class="content-for-layout focus-none"
+      role="main"
+      tabindex="-1"
+    >
+      {%- if settings.fixed_bg != blank -%}
+        <div class="bg-fixed" style="
+          background-image: url({{ settings.fixed_bg | image_url }});
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          position: fixed;
+          width: 100%;
+          height: 100vh;
+          left: 0;
+          top: 0;
+          z-index: -1;
+          pointer-events: none;">
+        </div>
+      {%- endif -%}
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    <ul hidden>
+      <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
+      <li id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t }}</li>
+    </ul>
+
+    {%- if settings.predictive_search_enabled -%}
+      <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    {% render 'halo-popup' %}
+
+    <script>
+   window.addEventListener('load', () => {
+  setTimeout(() => {
+    const element = document.querySelector('[data-view]');
+
+    if (element) {
+      element.setAttribute('data-view', '4');
+    }
+  }, 100);
+});
+</script>
+  </body>
+</html>
+
+
+<style>
+
+  .product-form__input--pill input[type=radio]+label{
+   font-family: 'Bricolage Grotesque';
+font-weight: 400;
+font-style: normal;
+font-size: 14px;
+line-height: 20px;
+letter-spacing: 1.4px;
+text-align: center;
+text-transform: uppercase;
+vertical-align: middle;
+background-color:transparent;
+  }
+
+  .quantity-selector {
+    background: transparent;
+}
+  .accordion .details__header{
+    font-family: 'Bricolage Grotesque';
+font-weight: 500;
+font-style: normal;
+font-size: 14px;
+line-height: 20px;
+letter-spacing: 1.4px;
+text-transform: capitalize;
+vertical-align: middle;
+color:#03110D;
+padding-left:0px;
+  }
+.details-content{ 
+  
+  font-family: 'Bricolage Grotesque';
+font-weight: 400;
+font-style: normal;
+font-size: 14px;
+line-height: 26px;
+letter-spacing: 1.4px;
+text-transform: capitalize;
+vertical-align: middle;
+color:#03110D;
+padding-left:10px;
+}
+.accelerated-checkout-block.checkout--button-secondary button.shopify-payment-button__button--unbranded{
+ width: 100%;
+height: 45px;
+padding: 14px 41px;
+gap: 10px;
+border-width: 1px;
+border-style: solid;
+opacity: 1;
+color:white;
+background-color:#A38560;
+border: #A38560;
+margin-top: 15px;
+}
+.add-to-cart-button-container{
+  width: 100%;
+height: 45px;
+gap: 10px;
+border-style: solid;
+opacity: 1;
+border:0px;
+margin-top:-5px;
+} 
+.product-form__buttons--stacked>*:not(.quantity-selector) {
+      padding: 0px;
+}
+
+{% comment %} FOOTER  {% endcomment %}
+
+
+
+.breadcrumbs__item {
+  font-family: "Bricolage Grotesque";
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 20.4px;
+  letter-spacing: 0;
+  text-transform: capitalize;
+  vertical-align: middle;
+}
+.section-footer p {
+  font-family: "Bricolage Grotesque";
+  font-weight: 400;
+  font-size: 14px !important;
+}
+.section-footer h6 {
+  font-family: "The Seasons", "Cormorant Garamond";
+  font-weight: 400;
+  font-size: 23.79px;
+  line-height: 37px;
+  letter-spacing: 0;
+}
+.section-footer h5 {
+  font-family: "Bricolage Grotesque";
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 1.4px;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+.menu__heading {
+  font-family: "Bricolage Grotesque";
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 1.4px;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+@media (min-width: 700px) {
+  details.menu__details.spacing-style {
+    position: relative;
+    left: -230px;
+    margin-left: 110px;
+  }
+}
+
+ .header-logo__image-container{
+  display:block!important;
+} 
+
+{% comment %} collection page {% endcomment %}
+
+.product-card-wrapper .card{
+  background-color:#E0E0E0;
+  padding: 25px 25px 30px 25px;;
+}
+
+.card-product-information {
+    height: auto;
+    align-items: center;
+}
+
+
+
+</style>

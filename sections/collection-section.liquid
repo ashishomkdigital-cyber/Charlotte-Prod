@@ -1,0 +1,301 @@
+{% comment %}
+  Section: Featured Product Grid
+  Style: Luxury editorial — warm cream tones, refined typography, polaroid-style cards
+{% endcomment %}
+
+<section class="product-grid-section" id="section-{{ section.id }}">
+  <div class="product-grid-inner">
+
+    {% if section.settings.heading != blank %}
+      <h2 class="product-grid__heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+
+    <div class="product-grid">
+      {% for block in section.blocks %}
+        {% assign product = all_products[block.settings.product] %}
+        <div class="product-card" {{ block.shopify_attributes }}>
+          <a class="product-card__link" href="{{ product.url | default: '#' }}">
+            <div class="product-card__image-wrap">
+              {% if product.featured_image %}
+                <img
+                  class="product-card__image"
+                  src="{{ product.featured_image | img_url: '600x600', crop: 'center' }}"
+                  alt="{{ product.featured_image.alt | escape }}"
+                  loading="lazy"
+                  width="600"
+                  height="600"
+                >
+              {% elsif block.settings.fallback_image != blank %}
+                <img
+                  class="product-card__image"
+                  src="{{ block.settings.fallback_image | img_url: '600x600', crop: 'center' }}"
+                  alt="{{ block.settings.fallback_image.alt | escape }}"
+                  loading="lazy"
+                  width="600"
+                  height="600"
+                >
+              {% else %}
+                <div class="product-card__placeholder">
+                  {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="product-card__info">
+              <p class="product-card__title">
+                {{ product.title | default: block.settings.fallback_title }}
+              </p>
+              <p class="product-card__price">
+                {% if product.price %}
+                  {{ product.price | money }}
+                {% else %}
+                  {{ block.settings.fallback_price }}
+                {% endif %}
+              </p>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+
+    {% comment %} {% if section.settings.button_label != blank %}
+      <div class="product-grid__cta">
+        <a class="product-grid__btn" href="{{ section.settings.button_url | default: '/collections/all' }}">
+          {{ section.settings.button_label }}
+        </a>
+      </div>
+    {% endif %} {% endcomment %}
+
+  </div>
+</section>
+
+<style>
+  /* ─── Tokens ─────────────────────────────────────── */
+  #section-{{ section.id }} {
+    --cream:       #e8d9c8;
+    --cream-light: #f3ebe1;
+    --ink:         #3a2f27;
+    --ink-muted:   #7a6a5e;
+    --gold:        #b8965a;
+    --card-bg:     #faf6f1;
+    --card-shadow: 0 4px 24px rgba(58, 47, 39, 0.10);
+    --radius:      4px;
+    --gap:         20px;
+    --font-serif:  'Georgia', 'Times New Roman', serif;
+    --font-sans:   'Gill Sans', 'Optima', 'Trebuchet MS', sans-serif;
+    --transition:  0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  /* ─── Section wrapper ────────────────────────────── */
+  .product-grid-section {
+    {% comment %} background-color: var(--cream); {% endcomment %}
+     background-color:#e5ccae;
+    padding: 0px 40px 80px;
+  }
+
+  .product-grid-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ─── Optional heading ───────────────────────────── */
+  .product-grid__heading {
+    font-family: var(--font-serif);
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    text-align: center;
+    margin: 0 0 48px;
+  }
+
+  /* ─── Grid ───────────────────────────────────────── */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gap);
+  }
+
+  @media (max-width: 900px) {
+    .product-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 520px) {
+    .product-grid        { grid-template-columns: 1fr; }
+    .product-grid-section { padding: 40px 20px 56px; }
+  }
+
+  /* ─── Card ───────────────────────────────────────── */
+  .product-card {
+    {% comment %} background: var(--card-bg); {% endcomment %}
+     background-color:#F1DFCA;
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+    will-change: transform;
+  }
+
+  .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 24px 56px rgba(58, 47, 39, 0.22);
+  }
+
+  .product-card__link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* ─── Image ──────────────────────────────────────── */
+  .product-card__image-wrap {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    {% comment %} background: var(--cream-light); {% endcomment %}
+     background-color:#F1DFCA;
+    padding: 16px;           /* polaroid inner margin */
+    box-sizing: border-box;
+  }
+
+  .product-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 2px;
+    display: block;
+  }
+
+  .product-card__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .product-card__placeholder .placeholder-svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  /* ─── Info ───────────────────────────────────────── */
+  .product-card__info {
+    padding: 14px 18px 20px;
+    text-align: center;
+    {% comment %} background: var(--card-bg); {% endcomment %}
+     background-color:#F1DFCA;
+  }
+
+  .product-card__title {
+    font-family: var(--font-sans);
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--ink-muted);
+    letter-spacing: 0.06em;
+    margin: 0 0 6px;
+    text-transform: none;
+  }
+
+  .product-card__price {
+    font-family: var(--font-sans);
+    font-size: 1.2rem;
+    color: var(--ink-muted);
+    margin: 0;
+    letter-spacing: 0.04em;
+  }
+
+  /* ─── CTA button ─────────────────────────────────── */
+  .product-grid__cta {
+    text-align: center;
+    margin-top: 48px;
+  }
+
+  .product-grid__btn {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    padding: 13px 36px;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: background var(--transition), color var(--transition);
+  }
+
+  .product-grid__btn:hover {
+    background: var(--ink);
+    color: var(--cream-light);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Product Grid",
+  "tag": "section",
+  "class": "product-grid-section-wrapper",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "The Cashmere Crew"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "Shop All"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button URL"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "image_picker",
+          "id": "fallback_image",
+          "label": "Fallback Image (if no product selected)"
+        },
+        {
+          "type": "text",
+          "id": "fallback_title",
+          "label": "Fallback Title",
+          "default": "The Cashmere Crew"
+        },
+        {
+          "type": "text",
+          "id": "fallback_price",
+          "label": "Fallback Price",
+          "default": "$280.00"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Grid custom",
+      "blocks": [
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" }
+      ]
+    }
+  ],
+  "max_blocks": 8
+}
+{% endschema %}
