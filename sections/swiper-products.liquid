@@ -383,34 +383,32 @@
 
     async function addToCart(card) {
       const variantId = card.dataset.variantId;
+      if (!variantId) return;
       card.classList.add('adding');
 
       const cartDrawer = document.querySelector('cart-drawer');
-      const payload = {
-        items: [{
-          id: Number(variantId),
-          quantity: 1
-        }]
-      };
+      const formData = new FormData();
+      formData.append('id', variantId);
+      formData.append('quantity', 1);
 
       // Request updated sections from Shopify to refresh drawer and count bubbles
       if (cartDrawer && typeof cartDrawer.getSectionsToRender === 'function') {
-        payload.sections = cartDrawer.getSectionsToRender().map((section) => section.id);
-        payload.sections_url = window.location.pathname;
+        formData.append('sections', cartDrawer.getSectionsToRender().map((section) => section.id).join(','));
+        formData.append('sections_url', window.location.pathname);
         if (typeof cartDrawer.setActiveElement === 'function') {
           cartDrawer.setActiveElement(document.activeElement);
         }
       }
 
       try {
-        const response = await fetch('/cart/add.js', {
+        const cartAddUrl = (window.routes && window.routes.cart_add_url) ? window.routes.cart_add_url : '/cart/add';
+        const response = await fetch(cartAddUrl, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/javascript'
           },
-          body: JSON.stringify(payload),
+          body: formData,
         });
 
         const data = await response.json();
