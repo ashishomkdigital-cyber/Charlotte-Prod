@@ -1,0 +1,338 @@
+{%- style -%}
+  .jumbo-hero-wrapper-{{ section.id }} {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #120803;
+  }
+
+  .jumbo-hero-bg-{{ section.id }} {
+    position: absolute;
+    inset: 0;
+    {%- if section.settings.background_image != blank -%}
+      background-image: linear-gradient(
+        rgba({{ section.settings.overlay_color.red }}, {{ section.settings.overlay_color.green }}, {{ section.settings.overlay_color.blue }}, {{ section.settings.overlay_opacity | divided_by: 100.0 }}),
+        rgba({{ section.settings.overlay_color.red }}, {{ section.settings.overlay_color.green }}, {{ section.settings.overlay_color.blue }}, {{ section.settings.overlay_opacity | divided_by: 100.0 }})
+      ), url('{{ section.settings.background_image | image_url: width: 2000 }}');
+    {%- else -%}
+      background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('https://cdn.shopify.com/s/files/1/0812/5005/8476/files/Jun_30_2026_11_09_30_AM.png?v=1782800760');
+    {%- endif -%}
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    z-index: 1;
+  }
+
+  .jumbo-hero-content-{{ section.id }} {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  /* Fixed Floating Heading */
+  .jumbo-heading-floating-{{ section.id }} {
+    font-family: 'Season Regular', 'Cormorant Garamond', serif !important;
+    font-size: clamp(3.6rem, 9vw, 9rem);
+    font-weight: 400 !important;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    line-height: 1;
+    white-space: nowrap;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    transform-origin: center center;
+    pointer-events: none;
+    color: {{ section.settings.text_color }};
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Description and CTA details block */
+  .jumbo-hero-details-{{ section.id }} {
+    margin-top: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    max-width: 480px;
+    color: {{ section.settings.text_color }};
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .jumbo-hero-description-{{ section.id }} {
+    font-family: var(--font-body--family);
+    font-size: 1.6rem;
+    font-weight: 300;
+    line-height: 1.6;
+    margin: 0;
+    opacity: 0.95;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+
+  .jumbo-hero-cta-{{ section.id }} {
+    display: inline-block;
+    padding: 12px 36px;
+    border: 1px solid {{ section.settings.text_color }};
+    background: transparent;
+    color: {{ section.settings.text_color }};
+    font-family: var(--font-body--family);
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  }
+
+  .jumbo-hero-cta-{{ section.id }}:hover {
+    background-color: {{ section.settings.text_color }};
+    color: #120803;
+    border-color: {{ section.settings.text_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .jumbo-hero-details-{{ section.id }} {
+      margin-top: 80px;
+      gap: 20px;
+    }
+    .jumbo-hero-description-{{ section.id }} {
+      font-size: 1.3rem;
+    }
+    .jumbo-hero-cta-{{ section.id }} {
+      padding: 10px 28px;
+      font-size: 1rem;
+    }
+  }
+{%- endstyle -%}
+
+<!-- Floating Animating Title -->
+<h1 class="jumbo-heading-floating-{{ section.id }}" id="JumboTitle-{{ section.id }}">{{ section.settings.heading }}</h1>
+
+<!-- Hero Wrapper -->
+<div class="jumbo-hero-wrapper-{{ section.id }}" id="JumboHero-{{ section.id }}">
+  <div class="jumbo-hero-bg-{{ section.id }}"></div>
+  
+  <div class="jumbo-hero-content-{{ section.id }}">
+    <div class="jumbo-hero-details-{{ section.id }}" id="JumboDetails-{{ section.id }}">
+      {%- if section.settings.description != blank -%}
+        <p class="jumbo-hero-description-{{ section.id }}">
+          {{ section.settings.description }}
+        </p>
+      {%- endif -%}
+
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link | default: '#' }}" class="jumbo-hero-cta-{{ section.id }}">
+          {{ section.settings.button_label }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    function initJumboHero() {
+      const hero = document.getElementById('JumboHero-{{ section.id }}');
+      const jumboTitle = document.getElementById('JumboTitle-{{ section.id }}');
+      const heroDetails = document.getElementById('JumboDetails-{{ section.id }}');
+
+      if (!hero || !jumboTitle || !heroDetails) return;
+
+      // Selectors to match common header logo styles in Shopify themes
+      const logoSelectors = [
+        '.header__heading-link',
+        '.header__heading',
+        '.header-logo',
+        '.logo',
+        '[href="/"]',
+        'a.header__heading-link'
+      ];
+
+      let headerLogo = null;
+      for (const selector of logoSelectors) {
+        const found = document.querySelector(selector);
+        if (found && found.offsetWidth > 0 && found.offsetHeight > 0) {
+          headerLogo = found;
+          break;
+        }
+      }
+
+      function handleScroll() {
+        const scrollY = window.scrollY;
+        const heroHeight = hero.offsetHeight;
+        const heroRect = hero.getBoundingClientRect();
+        
+        // Calculate scroll progress (0 when at top of hero, 1 when scrolled 80% down the hero height)
+        const progress = Math.min(Math.max(scrollY / (heroHeight * 0.8), 0), 1);
+
+        // 1. Fade out the description & CTA button
+        heroDetails.style.opacity = 1 - progress * 1.5;
+        heroDetails.style.transform = `translateY(${progress * -40}px)`;
+
+        // 2. Position and scale interpolation of the jumbo heading
+        const startX = window.innerWidth / 2;
+        const startY = window.innerHeight / 2;
+
+        let targetX = 120; // Default fallback X (left-aligned)
+        let targetY = 40;  // Default fallback Y (centered vertically in header)
+
+        if (window.innerWidth < 750) {
+          targetX = window.innerWidth / 2; // Center-aligned logo on mobile
+        }
+
+        // If the header logo is found, dynamically transition to its exact bounding rect coordinates
+        if (headerLogo) {
+          const logoRect = headerLogo.getBoundingClientRect();
+          targetX = logoRect.left + (logoRect.width / 2);
+          targetY = logoRect.top + (logoRect.height / 2) + scrollY; // add scrollY because logo is relative to viewport
+        }
+
+        // Subtract scrollY from absolute coordinates since jumboTitle is fixed positioned
+        const currentX = startX + (targetX - startX) * progress;
+        const currentY = (startY + (targetY - startY) * progress) - scrollY;
+
+        // Scale down to ~22% of starting size
+        const scale = 1 - (progress * 0.78);
+
+        jumboTitle.style.left = `${currentX}px`;
+        jumboTitle.style.top = `${currentY}px`;
+        jumboTitle.style.transform = `translate(-50%, -50%) scale(${scale})`;
+
+        // 3. Handover opacity animation to actual header logo
+        if (headerLogo) {
+          if (progress < 0.9) {
+            headerLogo.style.opacity = '0';
+            jumboTitle.style.opacity = '1';
+            jumboTitle.style.visibility = 'visible';
+          } else {
+            // Smooth handover between 90% and 100% scroll progress
+            const fadeProgress = (progress - 0.9) * 10; // 0 to 1
+            headerLogo.style.opacity = fadeProgress;
+            jumboTitle.style.opacity = 1 - fadeProgress;
+            
+            if (progress >= 1.0) {
+              jumboTitle.style.visibility = 'hidden';
+            } else {
+              jumboTitle.style.visibility = 'visible';
+            }
+          }
+        } else {
+          // If no logo is found, keep heading visible but transition it nicely in the header
+          jumboTitle.style.visibility = 'visible';
+          if (progress >= 1.0) {
+            jumboTitle.style.position = 'absolute';
+            jumboTitle.style.top = `${targetY}px`;
+            jumboTitle.style.left = `${targetX}px`;
+            jumboTitle.style.transform = `translate(-50%, -50%) scale(${scale})`;
+          } else {
+            jumboTitle.style.position = 'fixed';
+          }
+        }
+
+        // If hero is completely out of view, hide floating title completely
+        if (heroRect.bottom <= 0) {
+          jumboTitle.style.display = 'none';
+          if (headerLogo) headerLogo.style.opacity = '1';
+        } else {
+          jumboTitle.style.display = 'block';
+        }
+      }
+
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      window.addEventListener('resize', handleScroll);
+      
+      // Initial positioning
+      handleScroll();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initJumboHero);
+    } else {
+      initJumboHero();
+    }
+
+    // Refresh when loaded in Shopify customizer preview
+    document.addEventListener('shopify:section:load', function(event) {
+      if (event.detail.sectionId === '{{ section.id }}') {
+        initJumboHero();
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Jumbo Scroll Hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Jumbo Heading",
+      "default": "Charlotte"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "Crafted for quiet moments and everyday grace. Timelesspieces that feel like home."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "Discover"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Background Overlay Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Background Overlay Opacity",
+      "default": 35
+    }
+  ],
+  "presets": [
+    {
+      "name": "Jumbo Scroll Hero"
+    }
+  ]
+}
+{% endschema %}
